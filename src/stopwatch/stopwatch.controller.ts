@@ -18,7 +18,7 @@ import {
     Body,
     ClassSerializerInterceptor,
     Controller, Delete,
-    Get, Param,
+    Get, Param, Patch,
     Post,
     UseInterceptors
 } from '@nestjs/common';
@@ -123,7 +123,7 @@ export class StopwatchController {
     @ApiOkResponse({ type: StopwatchDto, description: 'Updated stopwatch (Public)' })
     @ApiBody({ type: () => UpdateStopwatchDto })
     @UseInterceptors(ClassSerializerInterceptor)
-    @Post('/')
+    @Patch('/:id')
     public async update(@Param('id') id: string, @Body() updateDto: UpdateStopwatchDto): Promise<StopwatchDto> {
         const trueId = parseInt(id);
         if (!trueId) throw new BadRequestException(`Stopwatch #${id} is not a number`);

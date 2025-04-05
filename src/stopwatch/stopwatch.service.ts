@@ -82,9 +82,8 @@ export class StopwatchService {
         if (!stopwatch) throw new NotFoundException(`Stopwatch #${id} not found`);
         if (stopwatch.isRunning) throw new BadRequestException(`Stopwatch #${id} is already running`);
 
-        report.debug(morse.grey('Starting stopwatch  ') + morse.magenta(`${stopwatch.id}`));
+        report.debug(morse.grey('Starting stopwatch  ') + morse.magenta(`#${stopwatch.id}`));
         stopwatch.isRunning = true;
-        stopwatch.elapsed = this.calculateElapsed(stopwatch);
         stopwatch.startTime = new Date();
         return this.toDto(await this.stopwatchRepository.save(stopwatch));
     }
@@ -102,7 +101,9 @@ export class StopwatchService {
         if (!stopwatch) throw new NotFoundException(`Stopwatch #${id} not found`);
         if (!stopwatch.isRunning) throw new BadRequestException(`Stopwatch #${id} is not running`);
 
-        report.debug(morse.grey('Stopping stopwatch  ') + morse.magenta(`${stopwatch.id}`));
+        report.debug(morse.grey('Stopping stopwatch  ') + morse.magenta(`#${stopwatch.id}`));
+
+        stopwatch.elapsed = this.calculateElapsed(stopwatch);
         stopwatch.isRunning = false;
         stopwatch.startTime = null;
         return this.toDto(await this.stopwatchRepository.save(stopwatch));
@@ -119,6 +120,9 @@ export class StopwatchService {
     public async update(id: number, updateDto: UpdateStopwatchDto): Promise<StopwatchDto> {
         const stopwatch = await this.stopwatchRepository.findOne({ where: { id } });
         if (!stopwatch) throw new NotFoundException(`Stopwatch #${id} not found`);
+        if (updateDto.elapsed && stopwatch.isRunning) throw new BadRequestException('Cannot update elapsed time while stopwatch is running');
+
+        report.debug(morse.grey('Updating stopwatch  ') + morse.magenta(`#${stopwatch.id}`));
 
         const patchedStopwatch = { ...stopwatch, ...updateDto };
         return this.toDto(await this.stopwatchRepository.save(patchedStopwatch));
@@ -131,6 +135,12 @@ export class StopwatchService {
      * @return {Promise<string>} A promise that resolves to a string confirming the deletion operation, typically 'ok'.
      */
     public async delete(id: number): Promise<string> {
+        const stopwatch = await this.stopwatchRepository.findOne({ where: { id } });
+        if (!stopwatch) throw new NotFoundException(`Stopwatch #${id} not found`);
+        if (stopwatch.isRunning) throw new BadRequestException(`Cannot delete stopwatch #${id} while it is running`);
+
+        report.debug(morse.grey('Deleting stopwatch  ') + morse.magenta(`#${stopwatch.id}`));
+
         await this.stopwatchRepository.softDelete({ id });
         return 'ok';
     }
@@ -165,7 +175,7 @@ export class StopwatchService {
             const currentTime = new Date();
             const startTime = stopwatch.startTime ? new Date(stopwatch.startTime) : currentTime;
             const timeDifference = (currentTime.getTime() - startTime.getTime()) / 1000; // Difference in seconds
-            return stopwatch.elapsed + timeDifference;
+            return Math.floor(stopwatch.elapsed + timeDifference);
         }
     }
 }
