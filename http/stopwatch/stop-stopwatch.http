@@ -1,0 +1,6 @@
+### Stops a stopwatch by id
+POST http://localhost:3000/stopwatch/stop/2
+    ?generated-in=WebStorm
+Accept: application/json
+
+###

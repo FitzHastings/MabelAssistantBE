@@ -22,6 +22,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middlewares/logging.middleware';
 import { getTypeOrmModuleOptions } from './type-orm.config';
+import { StopwatchModule } from './stopwatch/stopwatch.module';
 
 
 @Module({
@@ -31,7 +32,8 @@ import { getTypeOrmModuleOptions } from './type-orm.config';
             isGlobal: true
         }),
         TypeOrmModule.forRoot(getTypeOrmModuleOptions()),
-        CommonModule
+        CommonModule,
+        StopwatchModule
     ],
     controllers: [AppController],
     providers: [AppService]

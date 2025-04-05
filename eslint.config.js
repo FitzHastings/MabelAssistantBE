@@ -93,7 +93,7 @@ module.exports = [
             'prefer-template': 'error',
             'prefer-rest-params': 'error',
             'no-await-in-loop': 'error',
-            complexity: ['warning', 10],
+            complexity: ['warn', 10],
             'max-nested-callbacks': ['error', { max: 3 }],
             'max-lines-per-function': ['warn', 100],
             'prefer-destructuring': ['error', { object: true, array: false }],

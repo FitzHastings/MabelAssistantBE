@@ -1,0 +1,6 @@
+### Delete a stopwatch by id
+DELETE http://localhost:3000/stopwatch/1
+    ?generated-in=WebStorm
+Accept: application/json
+
+###

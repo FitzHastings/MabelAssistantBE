@@ -21,6 +21,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import AppModule from './app.module';
+import { report } from './winston.config';
+import { morse } from './common/util/morse';
+import { BenchmarkInterceptor } from './common/interceptors/benchmark.interceptor';
 
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -36,6 +39,10 @@ async function bootstrap(): Promise<void> {
         prefix: '/public/'
     });
 
+    app.useStaticAssets(join(__dirname, '..', 'public-static'), {
+        prefix: '/public-static/'
+    });
+
     if (process.env.EXPOSE_SWAGGER) {
         const config = new DocumentBuilder()
             .setTitle('Mabel Assistant API')
@@ -44,11 +51,20 @@ async function bootstrap(): Promise<void> {
             .addBearerAuth()
             .build();
 
-        console.log('Setting Up Swagger');
+        report.warn(morse.yellow('Setting Up Swagger'));
         const document = SwaggerModule.createDocument(app, config);
-        SwaggerModule.setup('docs', app, document);
+        report.info(morse.green('Document Created'));
+        document.servers = [{ url: '/api', description: 'dev' }, { url: '/', description: 'local' }];
+        report.info(morse.green('Document Servers Configured'));
+        SwaggerModule.setup('docs', app, document, {
+            customCssUrl: '/api/public-static/swagger.css' });
+        report.info(morse.green('Swagger Setup Complete'));
     }
 
+    if (process.env.NODE_ENV !== 'production') {
+        report.info(morse.green('Benchmarking Enabled'));
+        app.useGlobalInterceptors(new BenchmarkInterceptor());
+    }
     await app.listen(3000);
 }
 

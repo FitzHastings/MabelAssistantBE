@@ -1,0 +1,12 @@
+### Create a new stopwatch
+POST http://localhost:3000/stopwatch
+    ?generated-in=WebStorm
+Accept: application/json
+Content-Type: application/json
+
+
+{
+  "name": "going To the Store"
+}
+
+###

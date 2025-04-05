@@ -1,0 +1,5 @@
+### GET all stopwatches in the system
+GET http://localhost:3000/stopwatch
+    ?generated-in=WebStorm
+
+###
