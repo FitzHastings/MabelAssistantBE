@@ -1,5 +1,5 @@
 ### Stops a stopwatch by id
-POST http://localhost:3000/stopwatch/stop/2
+POST https://mabel.dragondelve.net/api/stopwatch/stop/1
     ?generated-in=WebStorm
 Accept: application/json
 

@@ -47,7 +47,7 @@ async function bootstrap(): Promise<void> {
         const config = new DocumentBuilder()
             .setTitle('Mabel Assistant API')
             .setDescription('Mabel Assistant Docs')
-            .setVersion('0.0.1')
+            .setVersion('0.0.5')
             .addBearerAuth()
             .build();
 

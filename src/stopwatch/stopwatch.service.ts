@@ -50,7 +50,7 @@ export class StopwatchService {
      * @return {Promise<StopwatchDto[]>} A promise that resolves to an array of Stopwatch Data Transfer Objects (DTOs).
      */
     public async findAll(): Promise<StopwatchDto[]> {
-        const stopwatches = await this.stopwatchRepository.find();
+        const stopwatches = await this.stopwatchRepository.find({ order: { id: 'ASC' } });
         report.debug(morse.grey('Found ') + morse.magenta(`${stopwatches.length}`) + morse.grey(' stopwatches'));
         return stopwatches.map((stopwatch) => this.toDto(stopwatch) );
     }
